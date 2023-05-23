@@ -1,0 +1,13 @@
+.linkEncuesta {
+	text-decoration: none;
+	color: #ffffff;
+	background-color: #3382dd;
+	padding: 8px 5px;
+	border-radius: 10px;
+	font-size: 13px;
+	cursor: pointer;
+	text-align: center;
+}
+.linkEncuesta:hover {
+	background-color: #2f6bb0;
+}
