@@ -26,10 +26,14 @@ export const saveEncuesta = ({
 		description,
 		questions,
 		fecha: new Date(),
+		status: 'Pendiente'
 	});
 
 export const updateEncuesta = (id: string, updatedFields: any) =>
 	updateDoc(doc(FireBaseGetStore, collectionName, id), updatedFields);
+
+export const finalizarEncuesta = (id: string) =>
+	updateDoc(doc(FireBaseGetStore, collectionName, id), {status: 'Finalizado'});
 
 export const onGetLinks = (callback: () => void) => {
 	const unsub = onSnapshot(

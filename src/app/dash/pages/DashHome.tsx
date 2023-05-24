@@ -78,11 +78,12 @@ export const DashHome: React.FC = () => {
 		{
 			field: 'view',
 			headerName: 'Encuesta',
-			renderCell: ({ row }: GridRenderCellParams) => (
-				<Link className="linkEncuesta" to={`/encuestas/${row.id}`}>
-					Relalizar Encuesta
-				</Link>
-			),
+			renderCell: ({ row }: GridRenderCellParams) => {
+				if(row.status != 'Finalizado')
+					return <Link className="linkEncuesta" to={`/encuestas_user/${row.id}`}>
+						Realizar Encuesta
+					</Link>
+			},
 			minWidth: 180,
 		},
 	];
@@ -97,7 +98,7 @@ export const DashHome: React.FC = () => {
 				<Typography variant="h5" component="h5">
 					Modulo de Encuestas
 				</Typography>
-				<Button
+				{isAdmin ? <Button
 					onClick={() => setIsOpenModal(true)}
 					sx={{
 						backgroundColor: Colors.Primary,
@@ -109,7 +110,7 @@ export const DashHome: React.FC = () => {
 					}}
 				>
 					Crear Encuesta
-				</Button>
+				</Button> : ''}
 			</Box>
 			<Table rows={encuestas} columns={isAdmin ? columns : columnsUsers} />
 			<Modal open={isOpenModal} setOpen={setIsOpenModal} type={Type.Add} />

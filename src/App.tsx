@@ -7,6 +7,7 @@ import ProtectedRoute from './app/shared/ProtectedRoute';
 import { DashLayout } from './app/dash/DashLayout';
 import { DashHome } from './app/dash/pages/DashHome';
 import { EncuestaPage } from './app/encuesta/EncuestaPage';
+import { EncuestaUserPage } from './app/encuesta_user/EncuestaUserPage';
 
 function App() {
 	return (
@@ -46,6 +47,17 @@ function App() {
 					<ProtectedRoute>
 						<DashLayout>
 							<EncuestaPage />
+						</DashLayout>
+					</ProtectedRoute>
+				}
+			/>
+
+			<Route
+				path="/encuestas_user/:id"
+				element={
+					<ProtectedRoute>
+						<DashLayout>
+							<EncuestaUserPage />
 						</DashLayout>
 					</ProtectedRoute>
 				}
