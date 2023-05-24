@@ -1,4 +1,4 @@
-import { createContext, useEffect, useState } from 'react';
+import React, { createContext, useEffect, useState } from 'react';
 import {
 	createUserWithEmailAndPassword,
 	signInWithEmailAndPassword,
@@ -47,7 +47,12 @@ export const AuthProvider: React.FC<React.PropsWithChildren> = ({
 
 	useEffect(() => {
 		const unsubuscribe = onAuthStateChanged(FireBaseGetAuth, (currentUser) => {
-			console.log({ currentUser });
+
+			if(currentUser?.email == 'gavino@gmail.com') 
+				localStorage.setItem('perfil', 'admin');
+			else 
+				localStorage.setItem('perfil', 'user');
+
 			setUser(currentUser);
 			setLoading(false);
 		});

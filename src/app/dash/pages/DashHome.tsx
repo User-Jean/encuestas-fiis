@@ -12,6 +12,7 @@ import { getEncuestas } from '../../../services/db/encuestas';
 export const DashHome: React.FC = () => {
 	const [isOpenModal, setIsOpenModal] = useState<boolean>(false);
 	const [encuestas, setEncuestas] = useState<Encuesta[]>([]);
+	const isAdmin = localStorage.getItem('perfil') == 'admin' ? true : false;
 
 	const loadData = async () => {
 		const querySnapshot = await getEncuestas();
@@ -59,6 +60,33 @@ export const DashHome: React.FC = () => {
 		},
 	];
 
+	const columnsUsers: GridColDef[] = [
+		{ field: 'id', headerName: 'ID', maxWidth: 100 },
+		{ field: 'title', headerName: 'Título', minWidth: 200 },
+		{ field: 'description', headerName: 'Descripción', width: 360 },
+		{
+			field: 'fecha',
+			headerName: 'Fecha',
+			type: 'date',
+			maxWidth: 200,
+		},
+		{
+			field: 'status',
+			headerName: 'Estado',
+			minWidth: 180,
+		},
+		{
+			field: 'view',
+			headerName: 'Encuesta',
+			renderCell: ({ row }: GridRenderCellParams) => (
+				<Link className="linkEncuesta" to={`/encuestas/${row.id}`}>
+					Relalizar Encuesta
+				</Link>
+			),
+			minWidth: 180,
+		},
+	];
+
 	useEffect(() => {
 		loadData();
 	}, []);
@@ -83,7 +111,7 @@ export const DashHome: React.FC = () => {
 					Crear Encuesta
 				</Button>
 			</Box>
-			<Table rows={encuestas} columns={columns} />
+			<Table rows={encuestas} columns={isAdmin ? columns : columnsUsers} />
 			<Modal open={isOpenModal} setOpen={setIsOpenModal} type={Type.Add} />
 		</Stack>
 	);

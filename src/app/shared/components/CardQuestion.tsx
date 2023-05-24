@@ -20,7 +20,7 @@ import {
 import { useFormik } from 'formik';
 import { useEffect, useState } from 'react';
 import * as Yup from 'yup';
-import { deletePregunta } from '../../../services/db/encuestas';
+import { deletePregunta, updatePregunta } from '../../../services/db/encuestas';
 import { Colors } from '../../shared/utils/colors';
 import { Encuesta, Question, TypeQuestion } from '../types';
 
@@ -69,6 +69,7 @@ const CardQuestion: React.FC<CardQuestionInterface> = ({
 	setLoading
 }) => {
 	const [options, setOptions] = useState<string[]>(['opcion 1']);
+	const [loadingCard, setLoadingCard] = useState<Boolean>(false);
 
 	const editOption = (index: number) => {
 		const optionsSelected = options;
@@ -84,13 +85,14 @@ const CardQuestion: React.FC<CardQuestionInterface> = ({
 
 	const saveOption = () => {
 		setOptions([...options, values.option]);
-		console.log([...options, values.option]);
 		setFieldValue('option', '');
 	};
 
 	const operations = [
 		{ name: 'guardar', bgColor: Colors.Save, icon: <SaveIcon />, handle: async() => {
-			
+			setLoadingCard(true)
+			await updatePregunta(encuesta.id, question.id, {...values, name: values.question, options});
+			setLoadingCard(false)
 		}},
 		// { name: 'editar', bgColor: Colors.Edit, icon: <EditIcon /> },
 		{ name: 'eliminar', bgColor: Colors.Close, icon: <DeleteIcon />, handle: async () => {
@@ -126,7 +128,7 @@ const CardQuestion: React.FC<CardQuestionInterface> = ({
 	}, [question]);
 
 	return (
-		<form onSubmit={handleSubmit} style={{ marginTop: 50 }}>
+		<form onSubmit={handleSubmit} style={{ marginTop: 50, position: 'relative' }}>
 			<Card>
 				<CardContent
 					sx={{
@@ -202,9 +204,6 @@ const CardQuestion: React.FC<CardQuestionInterface> = ({
 										<Box display="flex" alignItems="center" gap={2}>
 											<CheckCircleSharp sx={{ color: Colors.Primary }} />
 											<Typography>{option}</Typography>
-											<Button onClick={() => editOption(index)}>
-												<EditIcon sx={{ color: Colors.Edit }} fontSize="medium" />
-											</Button>
 											<Button onClick={() => deleteOption(index)}>
 												<DeleteIcon
 													sx={{ color: Colors.Close }}
@@ -226,6 +225,7 @@ const CardQuestion: React.FC<CardQuestionInterface> = ({
 					))}
 				</CardActions>
 			</Card>
+			<div className={`container ${loadingCard ? '' : 'd-none'}`}><div className="lds-spinner"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div></div>
 		</form>
 	);
 };

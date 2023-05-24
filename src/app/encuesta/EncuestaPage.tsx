@@ -1,11 +1,12 @@
-import { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
-import { getEncuesta, getPreguntas, savePregunta } from '../../services/db/encuestas';
-import { Encuesta, Question } from '../shared/types';
-import './EncuestaPage.css';
+import { ArrowCircleLeft } from '@mui/icons-material';
 import { Box, Button, Stack, Typography } from '@mui/material';
+import { useEffect, useState } from 'react';
+import { Link, useParams } from 'react-router-dom';
+import { getEncuesta, getPreguntas, savePregunta } from '../../services/db/encuestas';
 import CardQuestion from '../shared/components/CardQuestion';
+import { Encuesta, Question } from '../shared/types';
 import { Colors } from '../shared/utils/colors';
+import './EncuestaPage.css';
 
 export const EncuestaPage: React.FC = () => {
 	const [questions, setQuestions] = useState<Question[] | null>(null);
@@ -62,8 +63,12 @@ export const EncuestaPage: React.FC = () => {
 				sx={{ backgroundColor: Colors.White, zIndex: 9 }}
 				padding={2}
 			>
-				<Typography variant="h5" component="h5">
-					Modulo de preguntas
+				<Typography variant="h5" component="h5" style={{display: 'flex', alignItems: 'center'}}>
+					<Link to={`/dash`}>
+						<ArrowCircleLeft fontSize='large' htmlColor='#f57c00' 
+							style={{cursor: 'pointer', paddingRight: '5px'}}/>
+					</Link>
+					<div style={{fontWeight: 'bold', textTransform: 'uppercase'}}>{encuesta?.title}</div>
 				</Typography>
 				<Button
 					onClick={addQuestion}

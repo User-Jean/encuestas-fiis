@@ -8,6 +8,8 @@
   background-color: rgba(225, 224, 231, .2);
   z-index: 20;
   margin-top: 0 !important;
+  top: 0;
+  left: 0;
 }
 .lds-spinner {
   color: official;
@@ -19,6 +21,7 @@
   width: 80px;
   height: 80px;
   z-index: 20;
+  transform: translateX(-50%) translateY(-50%);
 }
 .lds-spinner div {
   transform-origin: 40px 40px;

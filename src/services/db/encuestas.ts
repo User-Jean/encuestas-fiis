@@ -7,6 +7,8 @@ import {
 	doc,
 	getDoc,
 	getDocs,
+	orderBy,
+	query
 } from 'firebase/firestore';
 import { FireBaseGetStore } from '../../firebase';
 import { Encuesta } from '../../app/shared/types';
@@ -47,11 +49,14 @@ export const getEncuesta = (id: string) =>
 	getDoc(doc(FireBaseGetStore, collectionName, id));
 
 export const getPreguntas = (id: string) => 
-	getDocs(collection(FireBaseGetStore, collectionName, id, collectionNameQuestion))
+	getDocs(query(collection(FireBaseGetStore, collectionName, id, collectionNameQuestion), orderBy('date', 'asc')))
 
 export const deletePregunta = (idEncuesta: string, idPregunta: string) => 
 	deleteDoc(doc(FireBaseGetStore, collectionName, idEncuesta, collectionNameQuestion, idPregunta))
 
 export const savePregunta = (idEncuesta: string) => 
-	addDoc(collection(FireBaseGetStore, collectionName, idEncuesta, collectionNameQuestion), {options: [], name: 'Prueba', type: 'Respuesta simple'});
+	addDoc(collection(FireBaseGetStore, collectionName, idEncuesta, collectionNameQuestion), {options: [], name: 'Prueba', type: 'Respuesta simple', date: new Date()});
+
+export const updatePregunta = (idEncuesta: string, idPregunta: string, updatedFields: any) => 
+	updateDoc(doc(FireBaseGetStore, collectionName, idEncuesta, collectionNameQuestion, idPregunta), updatedFields);
 
