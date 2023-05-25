@@ -10,6 +10,7 @@ import { deleteEncuesta } from '../../../../services/db/encuestas';
 
 interface OperationsInterface {
 	encuesta: Encuesta;
+	loadData: () => void;
 }
 
 export const Operations: React.FC<OperationsInterface> = ({ encuesta }) => {
@@ -17,6 +18,7 @@ export const Operations: React.FC<OperationsInterface> = ({ encuesta }) => {
 
 	const remove = async () => {
 		await deleteEncuesta(encuesta.id);
+		loadData();
 		// dispatch(removeEncuesta(encuesta.id));
 	};
 
@@ -37,6 +39,7 @@ export const Operations: React.FC<OperationsInterface> = ({ encuesta }) => {
 				setOpen={setIsOpenModal}
 				type={Type.Edit}
 				encuesta={encuesta}
+				loadData={loadData}
 			/>
 		</Box>
 	);
