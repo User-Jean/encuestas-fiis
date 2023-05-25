@@ -13,7 +13,7 @@ interface OperationsInterface {
 	loadData: () => void;
 }
 
-export const Operations: React.FC<OperationsInterface> = ({ encuesta }) => {
+export const Operations: React.FC<OperationsInterface> = ({ encuesta, loadData }) => {
 	const [isOpenModal, setIsOpenModal] = useState<boolean>(false);
 
 	const remove = async () => {
