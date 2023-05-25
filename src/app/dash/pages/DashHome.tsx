@@ -8,6 +8,8 @@ import { Link } from 'react-router-dom';
 import './DashHome.css';
 import { Encuesta } from '../../shared/types';
 import { getEncuestas } from '../../../services/db/encuestas';
+import LoginStyled from '../../auth/Login.styled';
+import ImgVillarreal from '../../../assets/images/villarreal.png';
 
 export const DashHome: React.FC = () => {
 	const [isOpenModal, setIsOpenModal] = useState<boolean>(false);
@@ -94,6 +96,7 @@ export const DashHome: React.FC = () => {
 
 	return (
 		<Stack spacing={4}>
+			<LoginStyled.Logo style={{width: '250px'}} src={ImgVillarreal} alt="" />
 			<Box display="flex" alignItems="center" justifyContent="space-between">
 				<Typography variant="h5" component="h5">
 					Modulo de Encuestas

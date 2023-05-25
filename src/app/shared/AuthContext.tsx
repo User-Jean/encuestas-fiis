@@ -48,7 +48,7 @@ export const AuthProvider: React.FC<React.PropsWithChildren> = ({
 	useEffect(() => {
 		const unsubuscribe = onAuthStateChanged(FireBaseGetAuth, (currentUser) => {
 
-			if(currentUser?.email == 'gavino@gmail.com') 
+			if(currentUser?.email == 'gavino@gmail.com' || currentUser?.email == 'gavino@unfv.edu.pe') 
 				localStorage.setItem('perfil', 'admin');
 			else 
 				localStorage.setItem('perfil', 'user');

@@ -1,0 +1,33 @@
+.icon {
+  display: flex;
+  align-items: center; 
+  background-color: #f07613;
+  padding: 5px;
+  margin-bottom: 5px;
+  transition: all .5s;
+  width: 220px;
+  justify-content: space-between;
+  position: relative;
+  z-index: 10;
+  transform: translateX(-180px);
+  text-decoration: none;
+  color: white;
+  font-size: 14px;
+}
+
+.icon:hover {
+  transform: translateX(0);
+}
+
+.icon.fb:hover {
+  background-color: #3B5998;
+}
+.icon.tw:hover {
+  background-color: #4099FF;
+}
+.icon.ig:hover {
+  background-color: #eb8532;
+}
+.icon.yt:hover {
+  background-color: #cc252c;
+}

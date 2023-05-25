@@ -13,6 +13,8 @@ import { useNavigate, Link } from 'react-router-dom';
 import * as Yup from 'yup';
 import LoginStyled from './Login.styled';
 import useAuth from '../../hooks/useAuth';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const LoginPage: React.FC = () => {
 	const { login } = useAuth();
@@ -37,9 +39,31 @@ const LoginPage: React.FC = () => {
 		},
 	});
 
-	const verifyLogin = async (email: string, password: string) => {
-		await login({ email, password });
-		navigate('/dash');
+	const verifyLogin = (email: string, password: string) => {
+		login({ email, password }).then(() => {
+			navigate('/dash');
+			toast.success('Usuario correcto', {
+				position: "top-right",
+				autoClose: 5000,
+				hideProgressBar: false,
+				closeOnClick: false,
+				pauseOnHover: true,
+				draggable: true,
+				progress: undefined,
+				theme: "light",
+			});
+		}).catch((e) => {
+			toast.error('Error de credenciales', {
+				position: "top-right",
+				autoClose: 5000,
+				hideProgressBar: false,
+				closeOnClick: false,
+				pauseOnHover: true,
+				draggable: true,
+				progress: undefined,
+				theme: "light",
+			});
+		});
 	};
 
 	return (
@@ -51,6 +75,18 @@ const LoginPage: React.FC = () => {
 			height="100vh"
 			sx={{ backgroundColor: amber[50] }}
 		>
+			<ToastContainer
+				position="top-right"
+				autoClose={5000}
+				hideProgressBar={false}
+				newestOnTop={false}
+				closeOnClick={false}
+				rtl={false}
+				pauseOnFocusLoss
+				draggable
+				pauseOnHover
+				theme="light"
+				/>
 			<Card sx={{ width: '70%', height: 450 }}>
 				<Grid container sx={{ width: '100%', height: '100%' }}>
 					<Grid item xs={6} height="100%">
