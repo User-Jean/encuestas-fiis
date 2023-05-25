@@ -37,7 +37,7 @@ export const DashLayout: React.FC<React.PropsWithChildren> = ({ children }) => {
 				</a>
 			</div>
 			<Container
-				sx={{ marginTop: '100px', marginBottom: 5, overflowY: 'auto' }}
+				sx={{ marginTop: '100px', marginBottom: 5}}
 			>
 				<Outlet />
 				{children}
