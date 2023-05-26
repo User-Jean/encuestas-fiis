@@ -44,7 +44,7 @@ export const EncuestaUserPage: React.FC = () => {
 	const finalizar = async () => {
 		if(encuesta) {
 			setLoading(true)
-			await finalizarEncuesta(encuesta.id)
+			await finalizarEncuesta(encuesta.id, localStorage.getItem('email') ?? '')
 			await saveEncuestaUsuario(localStorage.getItem('idUser') ?? '', encuesta.id)
 			navigate('/dash');
 		}

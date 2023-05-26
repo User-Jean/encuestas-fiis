@@ -30,19 +30,18 @@ export const saveEncuesta = ({
 		fecha: new Date(),
 		status: 'Pendiente',
 		count: 0,
+		usuarios: []
 	});
 
 export const updateEncuesta = (id: string, updatedFields: any) =>
 	updateDoc(doc(FireBaseGetStore, collectionName, id), updatedFields);
 
-export const finalizarEncuesta = async (id: string) => {
-
+export const finalizarEncuesta = async (id: string, email: string) => {
 	const encuesta = await getDoc(doc(FireBaseGetStore, collectionName, id))
 	// @ts-ignore
-	let contador = encuesta.data()?.count ?? 0;
-	contador++;
-	console.log(contador)
-	return updateDoc(doc(FireBaseGetStore, collectionName, id), {count: contador});
+	let usuarios = encuesta.data()?.usuarios ?? [];
+	usuarios.push(email);
+	return updateDoc(doc(FireBaseGetStore, collectionName, id), {usuarios});
 }
 	
 

@@ -10,11 +10,14 @@ import Table, { Operations } from '../../shared/components/Table/Table';
 import { Encuesta } from '../../shared/types';
 import { Colors } from '../../shared/utils/colors';
 import './DashHome.css';
+import ModalUser from './ModalUser';
 
 export const DashHome: React.FC = () => {
 	const [isOpenModal, setIsOpenModal] = useState<boolean>(false);
+	const [isOpenModalUser, setIsOpenModalUser] = useState<boolean>(false);
 	const [encuestas, setEncuestas] = useState<Encuesta[]>([]);
 	const [encuestasFinalizadas, setEncuestasFinalizadas] = useState<string[]>([]);
+	const [usuarios, setUsuarios] = useState([]);
 	const isAdmin = localStorage.getItem('perfil') == 'admin' ? true : false;
 
 	const loadData = async () => {
@@ -39,11 +42,24 @@ export const DashHome: React.FC = () => {
 		setEncuestasFinalizadas(object);
 	};
 
+	const openModalUser = (row: any) => {
+		setUsuarios(row.usuarios ?? []);
+		setIsOpenModalUser(true);
+	}
+
 	const columns: GridColDef[] = [
 		{ field: 'id', headerName: 'ID', maxWidth: 100 },
 		{ field: 'title', headerName: 'Título', minWidth: 200 },
 		{ field: 'description', headerName: 'Descripción', width: 250 },
-		{ field: 'count', headerName: 'N° Respondieron', width: 150, renderCell: ({ row }: GridRenderCellParams) => row.count ?? 0 },
+		{ field: 'count', headerName: 'N° Respondieron', width: 150, 
+			renderCell: ({ row }: GridRenderCellParams) =>  {
+				// return 0;
+				let cantidad = row.usuarios?.length ?? 0;
+				if(cantidad == 0) {
+					return <span>0</span>
+				}
+				return <span style={{cursor: 'pointer'}} onClick={() => openModalUser(row)}>{row.usuarios?.length ?? 0}</span>
+			}},
 		{
 			field: 'fecha',
 			headerName: 'Fecha',
@@ -131,6 +147,7 @@ export const DashHome: React.FC = () => {
 			</Box>
 			<Table rows={encuestas} columns={isAdmin ? columns : columnsUsers} />
 			<Modal open={isOpenModal} setOpen={setIsOpenModal} loadData={loadData} type={Type.Add} />
+			<ModalUser open={isOpenModalUser} setOpen={setIsOpenModalUser} usuarios={usuarios}/>
 		</Stack>
 	);
 };
