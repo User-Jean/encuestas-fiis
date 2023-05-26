@@ -27,6 +27,7 @@ interface ModalInterface {
 	open: boolean;
 	setOpen: (value: boolean) => void;
 	encuesta?: Encuesta;
+	loadData: () => void;
 }
 
 const validationSchema = Yup.object().shape({
@@ -39,6 +40,7 @@ const Modal: React.FC<ModalInterface> = ({
 	setOpen,
 	type,
 	encuesta = {} as Encuesta,
+	loadData
 }) => {
 	console.log(encuesta.id);
 	const { id, title, description } = encuesta as Encuesta;
@@ -55,6 +57,7 @@ const Modal: React.FC<ModalInterface> = ({
 					description: values.description!,
 					questions: values.questions! ?? [],
 				});
+				loadData();
 				resetForm();
 				handleClose();
 				break;
@@ -64,6 +67,7 @@ const Modal: React.FC<ModalInterface> = ({
 					id: id,
 				};
 				await updateEncuesta(encuestaEdited.id!, encuestaEdited);
+				loadData();
 				resetForm();
 				handleClose();
 				break;

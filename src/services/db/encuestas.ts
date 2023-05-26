@@ -55,7 +55,7 @@ export const onGetLinks = (callback: () => void) => {
 };
 
 export const getEncuestas = () =>
-	getDocs(collection(FireBaseGetStore, collectionName));
+	getDocs(query(collection(FireBaseGetStore, collectionName), orderBy('fecha', 'desc')));
 
 export const deleteEncuesta = (id: string) =>
 	deleteDoc(doc(FireBaseGetStore, collectionName, id));

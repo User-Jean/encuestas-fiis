@@ -54,7 +54,7 @@ export const DashHome: React.FC = () => {
 			field: 'actions',
 			headerName: 'Acciones',
 			renderCell: ({ row }: GridRenderCellParams) => (
-				<Operations encuesta={row} />
+				<Operations encuesta={row} loadData={loadData} />
 			),
 			minWidth: 180,
 		},
@@ -130,7 +130,7 @@ export const DashHome: React.FC = () => {
 				</Button> : ''}
 			</Box>
 			<Table rows={encuestas} columns={isAdmin ? columns : columnsUsers} />
-			<Modal open={isOpenModal} setOpen={setIsOpenModal} type={Type.Add} />
+			<Modal open={isOpenModal} setOpen={setIsOpenModal} loadData={loadData} type={Type.Add} />
 		</Stack>
 	);
 };
