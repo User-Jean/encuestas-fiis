@@ -2,7 +2,7 @@ import { ArrowCircleLeft } from '@mui/icons-material';
 import { Box, Button, Stack, Typography } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
-import { finalizarEncuesta, getEncuesta, getPreguntas } from '../../services/db/encuestas';
+import { finalizarEncuesta, getEncuesta, getPreguntas, saveEncuestaUsuario } from '../../services/db/encuestas';
 import { Encuesta, Question } from '../shared/types';
 import { Colors } from '../shared/utils/colors';
 import './EncuestaUserPage.css';
@@ -45,6 +45,7 @@ export const EncuestaUserPage: React.FC = () => {
 		if(encuesta) {
 			setLoading(true)
 			await finalizarEncuesta(encuesta.id)
+			await saveEncuestaUsuario(localStorage.getItem('idUser') ?? '', encuesta.id)
 			navigate('/dash');
 		}
 	}

@@ -8,13 +8,15 @@ import {
 	getDoc,
 	getDocs,
 	orderBy,
-	query
+	query,
+	where
 } from 'firebase/firestore';
 import { FireBaseGetStore } from '../../firebase';
 import { Encuesta } from '../../app/shared/types';
 
 const collectionName = 'encuestas';
 const collectionNameQuestion = 'questions';
+const collectionNameUsuario = 'encuestas_usuarios';
 
 export const saveEncuesta = ({
 	title,
@@ -26,14 +28,23 @@ export const saveEncuesta = ({
 		description,
 		questions,
 		fecha: new Date(),
-		status: 'Pendiente'
+		status: 'Pendiente',
+		count: 0,
 	});
 
 export const updateEncuesta = (id: string, updatedFields: any) =>
 	updateDoc(doc(FireBaseGetStore, collectionName, id), updatedFields);
 
-export const finalizarEncuesta = (id: string) =>
-	updateDoc(doc(FireBaseGetStore, collectionName, id), {status: 'Finalizado'});
+export const finalizarEncuesta = async (id: string) => {
+
+	const encuesta = await getDoc(doc(FireBaseGetStore, collectionName, id))
+	// @ts-ignore
+	let contador = encuesta.data()?.count ?? 0;
+	contador++;
+	console.log(contador)
+	return updateDoc(doc(FireBaseGetStore, collectionName, id), {count: contador});
+}
+	
 
 export const onGetLinks = (callback: () => void) => {
 	const unsub = onSnapshot(
@@ -63,4 +74,14 @@ export const savePregunta = (idEncuesta: string) =>
 
 export const updatePregunta = (idEncuesta: string, idPregunta: string, updatedFields: any) => 
 	updateDoc(doc(FireBaseGetStore, collectionName, idEncuesta, collectionNameQuestion, idPregunta), updatedFields);
+
+export const saveEncuestaUsuario = (idUser:string, idEncuesta: string) =>
+	addDoc(collection(FireBaseGetStore, collectionNameUsuario), {idUser: idUser, idEncuesta: idEncuesta});
+
+export const getEncuestaByUser = (idUser: string) => 
+	getDocs(query(collection(FireBaseGetStore, collectionNameUsuario), where('idUser','==', idUser)))
+
+export const getEncuestaByEncuesta = (idEncuesta: string) => 
+	getDocs(query(collection(FireBaseGetStore, collectionNameUsuario), where('idEncuesta','==', idEncuesta)))
+
 

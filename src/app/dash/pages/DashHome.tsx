@@ -1,27 +1,26 @@
-import { useState, useEffect } from 'react';
 import { Box, Button, Stack, Typography } from '@mui/material';
 import { GridColDef, GridRenderCellParams } from '@mui/x-data-grid';
+import { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
+import ImgVillarreal from '../../../assets/images/villarreal.png';
+import { getEncuestaByUser, getEncuestas } from '../../../services/db/encuestas';
+import LoginStyled from '../../auth/Login.styled';
 import Modal, { Type } from '../../shared/components/Modal/Modal';
 import Table, { Operations } from '../../shared/components/Table/Table';
-import { Colors } from '../../shared/utils/colors';
-import { Link } from 'react-router-dom';
-import './DashHome.css';
 import { Encuesta } from '../../shared/types';
-import { getEncuestas } from '../../../services/db/encuestas';
-import LoginStyled from '../../auth/Login.styled';
-import ImgVillarreal from '../../../assets/images/villarreal.png';
+import { Colors } from '../../shared/utils/colors';
+import './DashHome.css';
 
 export const DashHome: React.FC = () => {
 	const [isOpenModal, setIsOpenModal] = useState<boolean>(false);
 	const [encuestas, setEncuestas] = useState<Encuesta[]>([]);
+	const [encuestasFinalizadas, setEncuestasFinalizadas] = useState<string[]>([]);
 	const isAdmin = localStorage.getItem('perfil') == 'admin' ? true : false;
 
 	const loadData = async () => {
 		const querySnapshot = await getEncuestas();
 		const docs: Encuesta[] = [];
-		console.log(querySnapshot);
 		querySnapshot.forEach((doc) => {
-			console.log(doc.data())
 			// @ts-ignore
 			docs.push({
 				...doc.data(),
@@ -30,12 +29,21 @@ export const DashHome: React.FC = () => {
 			});
 		});
 		setEncuestas(docs);
+
+		const _encuestas = await getEncuestaByUser(localStorage.getItem('idUser') ?? '');
+		const object:string[] = []
+		_encuestas.forEach((e) => {
+			// @ts-ignore
+			object.push(e.data().idEncuesta);
+		})
+		setEncuestasFinalizadas(object);
 	};
 
 	const columns: GridColDef[] = [
 		{ field: 'id', headerName: 'ID', maxWidth: 100 },
 		{ field: 'title', headerName: 'Título', minWidth: 200 },
-		{ field: 'description', headerName: 'Descripción', width: 360 },
+		{ field: 'description', headerName: 'Descripción', width: 250 },
+		{ field: 'count', headerName: 'N° Respondieron', width: 150, renderCell: ({ row }: GridRenderCellParams) => row.count ?? 0 },
 		{
 			field: 'fecha',
 			headerName: 'Fecha',
@@ -75,13 +83,19 @@ export const DashHome: React.FC = () => {
 		{
 			field: 'status',
 			headerName: 'Estado',
+			renderCell: ({ row }: GridRenderCellParams) => {
+				if(!encuestasFinalizadas.includes(row.id))
+					return 'Pendiente'
+				else 
+					return 'Finalizado'
+			},
 			minWidth: 180,
 		},
 		{
 			field: 'view',
 			headerName: 'Encuesta',
 			renderCell: ({ row }: GridRenderCellParams) => {
-				if(row.status != 'Finalizado')
+				if(!encuestasFinalizadas.includes(row.id))
 					return <Link className="linkEncuesta" to={`/encuestas_user/${row.id}`}>
 						Realizar Encuesta
 					</Link>

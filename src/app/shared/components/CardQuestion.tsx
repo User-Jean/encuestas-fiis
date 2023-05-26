@@ -71,13 +71,6 @@ const CardQuestion: React.FC<CardQuestionInterface> = ({
 	const [options, setOptions] = useState<string[]>(['opcion 1']);
 	const [loadingCard, setLoadingCard] = useState<Boolean>(false);
 
-	const editOption = (index: number) => {
-		const optionsSelected = options;
-		optionsSelected[index] = values.option;
-		setOptions([...optionsSelected]);
-		setFieldValue('option', '');
-	};
-
 	const deleteOption = (index: number) => {
 		const optionsFilter = options.filter((_, select) => select !== index);
 		setOptions([...optionsFilter]);
