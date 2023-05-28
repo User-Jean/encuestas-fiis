@@ -3,7 +3,9 @@ export interface Encuesta {
 	description: string;
 	title: string;
 	fecha: Date;
+	fechaFinal: Date;
 	questions: Question[];
+	status: string;
 }
 
 export enum TypeQuestion {

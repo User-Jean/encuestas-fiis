@@ -62,6 +62,9 @@ export const deleteEncuesta = (id: string) =>
 export const getEncuesta = (id: string) =>
 	getDoc(doc(FireBaseGetStore, collectionName, id));
 
+export const activarEncuesta = (idEncuesta: string, updatedFields: any) => 
+	updateDoc(doc(FireBaseGetStore, collectionName, idEncuesta), updatedFields)
+
 export const getPreguntas = (id: string) => 
 	getDocs(query(collection(FireBaseGetStore, collectionName, id, collectionNameQuestion), orderBy('date', 'asc')))
 

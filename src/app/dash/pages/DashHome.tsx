@@ -11,12 +11,15 @@ import { Encuesta } from '../../shared/types';
 import { Colors } from '../../shared/utils/colors';
 import './DashHome.css';
 import ModalUser from './ModalUser';
+import ModalActivateEncuesta from './ModalActivateEncuesta';
 
 export const DashHome: React.FC = () => {
 	const [isOpenModal, setIsOpenModal] = useState<boolean>(false);
 	const [isOpenModalUser, setIsOpenModalUser] = useState<boolean>(false);
+	const [isOpenModalActivateEncuesta, setIsOpenModalActivateEncuesta] = useState<boolean>(false);
 	const [encuestas, setEncuestas] = useState<Encuesta[]>([]);
 	const [encuestasFinalizadas, setEncuestasFinalizadas] = useState<string[]>([]);
+	const [idEncuestaSelected, setIdEncuestaSelected] = useState<string>('');
 	const [usuarios, setUsuarios] = useState([]);
 	const isAdmin = localStorage.getItem('perfil') == 'admin' ? true : false;
 
@@ -25,11 +28,14 @@ export const DashHome: React.FC = () => {
 		const docs: Encuesta[] = [];
 		querySnapshot.forEach((doc) => {
 			// @ts-ignore
+			if(!isAdmin && doc.data().fechaFinal == null) return;
+			// @ts-ignore
 			docs.push({
 				...doc.data(),
 				id: doc.id,
-				fecha: new Date(doc.data().fecha.seconds * 1000),
+				fecha: new Date(doc.data().fecha.seconds * 1000)
 			});
+			
 		});
 		setEncuestas(docs);
 
@@ -47,17 +53,19 @@ export const DashHome: React.FC = () => {
 		setIsOpenModalUser(true);
 	}
 
+	const openModalActivateEncuesta = (idEncuesta: string ) => {
+		setIdEncuestaSelected(idEncuesta);
+		setIsOpenModalActivateEncuesta(true);
+	}
+
 	const columns: GridColDef[] = [
 		{ field: 'id', headerName: 'ID', maxWidth: 100 },
 		{ field: 'title', headerName: 'Título', minWidth: 200 },
 		{ field: 'description', headerName: 'Descripción', width: 250 },
 		{ field: 'count', headerName: 'N° Respondieron', width: 150, 
 			renderCell: ({ row }: GridRenderCellParams) =>  {
-				// return 0;
 				let cantidad = row.usuarios?.length ?? 0;
-				if(cantidad == 0) {
-					return <span>0</span>
-				}
+				if(cantidad == 0) return <span>0</span>
 				return <span style={{cursor: 'pointer'}} onClick={() => openModalUser(row)}>{row.usuarios?.length ?? 0}</span>
 			}},
 		{
@@ -67,20 +75,37 @@ export const DashHome: React.FC = () => {
 			maxWidth: 200,
 		},
 		{
-			field: 'actions',
-			headerName: 'Acciones',
-			renderCell: ({ row }: GridRenderCellParams) => (
-				<Operations encuesta={row} loadData={loadData} />
-			),
-			minWidth: 180,
-		},
-		{
 			field: 'view',
-			headerName: 'Ver encuesta',
+			headerName: 'Ver',
 			renderCell: ({ row }: GridRenderCellParams) => (
 				<Link className="linkEncuesta" to={`/encuestas/${row.id}`}>
 					Ver encuesta
 				</Link>
+			),
+			minWidth: 150,
+		},
+		{
+			field: 'view2',
+			headerName: 'Estado',
+			renderCell: ({ row }: GridRenderCellParams) => {
+				if(row.fechaFinal) {
+					if(new Date(row.fechaFinal.seconds * 1000) >= new Date()) {
+						return 'Activado'
+					} else {
+						return 'Finalizado'
+					}
+				} else {
+					return  <Button style={{backgroundColor: '#3382dd', color: 'white', textTransform: 'none', fontWeight: 'normal'}}
+						onClick={() => openModalActivateEncuesta(row.id)}>Activar</Button>
+				}
+			},
+			minWidth: 150,
+		},
+		{
+			field: 'actions',
+			headerName: 'Acciones',
+			renderCell: ({ row }: GridRenderCellParams) => (
+				<Operations encuesta={row} loadData={loadData} />
 			),
 			minWidth: 180,
 		},
@@ -100,10 +125,9 @@ export const DashHome: React.FC = () => {
 			field: 'status',
 			headerName: 'Estado',
 			renderCell: ({ row }: GridRenderCellParams) => {
-				if(!encuestasFinalizadas.includes(row.id))
-					return 'Pendiente'
-				else 
-					return 'Finalizado'
+				if(new Date(row.fechaFinal.seconds * 1000) < new Date()) return 'Finalizado'
+				if(!encuestasFinalizadas.includes(row.id)) return 'Activado'
+				else return 'Finalizado'
 			},
 			minWidth: 180,
 		},
@@ -111,6 +135,7 @@ export const DashHome: React.FC = () => {
 			field: 'view',
 			headerName: 'Encuesta',
 			renderCell: ({ row }: GridRenderCellParams) => {
+				if(new Date(row.fechaFinal.seconds * 1000) < new Date()) return '-'
 				if(!encuestasFinalizadas.includes(row.id))
 					return <Link className="linkEncuesta" to={`/encuestas_user/${row.id}`}>
 						Realizar Encuesta
@@ -148,6 +173,8 @@ export const DashHome: React.FC = () => {
 			<Table rows={encuestas} columns={isAdmin ? columns : columnsUsers} />
 			<Modal open={isOpenModal} setOpen={setIsOpenModal} loadData={loadData} type={Type.Add} />
 			<ModalUser open={isOpenModalUser} setOpen={setIsOpenModalUser} usuarios={usuarios}/>
+			<ModalActivateEncuesta open={isOpenModalActivateEncuesta} 
+			setOpen={setIsOpenModalActivateEncuesta} idEncuesta={idEncuestaSelected} loadData={loadData}/>
 		</Stack>
 	);
 };
