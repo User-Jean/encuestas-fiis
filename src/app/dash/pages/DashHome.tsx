@@ -135,7 +135,7 @@ export const DashHome: React.FC = () => {
 			field: 'view',
 			headerName: 'Encuesta',
 			renderCell: ({ row }: GridRenderCellParams) => {
-				if(new Date(row.fechaFinal.seconds * 1000) < new Date()) return '-'
+				if(new Date(row.fechaFinal.seconds * 1000) < new Date()) return ''
 				if(!encuestasFinalizadas.includes(row.id))
 					return <Link className="linkEncuesta" to={`/encuestas_user/${row.id}`}>
 						Realizar Encuesta
